@@ -39,7 +39,7 @@
 
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 
-        <PackageReference Include="Soenneker.ServiceBus.Admin" Version="1.0.125" />
+        <PackageReference Include="Soenneker.ServiceBus.Admin" Version="1.0.127" />
 
         <PackageReference Include="Soenneker.ServiceBus.Client" Version="1.0.127" />
     </ItemGroup>
