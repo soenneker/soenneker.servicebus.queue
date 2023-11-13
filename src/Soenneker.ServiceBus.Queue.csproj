@@ -41,6 +41,6 @@
 
         <PackageReference Include="Soenneker.ServiceBus.Admin" Version="1.0.135" />
 
-        <PackageReference Include="Soenneker.ServiceBus.Client" Version="1.0.137" />
+        <PackageReference Include="Soenneker.ServiceBus.Client" Version="1.0.139" />
     </ItemGroup>
 </Project>
