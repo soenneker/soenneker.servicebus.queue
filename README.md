@@ -8,5 +8,5 @@
 ## Installation
 
 ```
-Install-Package Soenneker.ServiceBus.Queue
+dotnet add package Soenneker.ServiceBus.Queue
 ```
