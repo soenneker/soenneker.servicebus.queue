@@ -39,7 +39,7 @@
 
         
 
-        <PackageReference Include="Soenneker.ServiceBus.Admin" Version="2.1.273" />
+        <PackageReference Include="Soenneker.ServiceBus.Admin" Version="2.1.275" />
 
         <PackageReference Include="Soenneker.ServiceBus.Client" Version="2.1.272" />
     </ItemGroup>
