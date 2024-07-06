@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Azure;
 using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 using Microsoft.Extensions.Logging;
 using Soenneker.Extensions.Task;
 using Soenneker.Extensions.ValueTask;
@@ -27,13 +28,15 @@ public class ServiceBusQueueUtil : IServiceBusQueueUtil
 
     public async ValueTask CreateQueueIfDoesNotExist(string queue, CancellationToken cancellationToken = default)
     {
-        Response<bool>? queueExists = await (await _serviceBusAdminUtil.Get(cancellationToken).NoSync()).QueueExistsAsync(queue, cancellationToken).NoSync();
+        ServiceBusAdministrationClient adminClient = await _serviceBusAdminUtil.Get(cancellationToken).NoSync();
+
+        Response<bool>? queueExists = await adminClient.QueueExistsAsync(queue, cancellationToken).NoSync();
 
         if (queueExists is not {Value: true})
         {
             _logger.LogInformation("== SERVICEBUSQUEUEUTIL: Queue did not exist, creating: {queue} ...", queue);
 
-            await (await _serviceBusAdminUtil.Get(cancellationToken).NoSync()).CreateQueueAsync(queue, cancellationToken).NoSync();
+            await adminClient.CreateQueueAsync(queue, cancellationToken).NoSync();
 
             _logger.LogInformation("== SERVICEBUSQUEUEUTIL: Queue finished creating: {queue}", queue);
         }
@@ -48,7 +51,7 @@ public class ServiceBusQueueUtil : IServiceBusQueueUtil
             ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete
         };
 
-        ServiceBusClient client = await _serviceBusClientUtil.GetClient(cancellationToken).NoSync();
+        ServiceBusClient client = await _serviceBusClientUtil.Get(cancellationToken).NoSync();
 
         ServiceBusReceiver? receiver = client.CreateReceiver(queue, receiverOptions);
 
