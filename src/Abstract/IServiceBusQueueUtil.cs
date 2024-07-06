@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Soenneker.ServiceBus.Queue.Abstract;
@@ -8,7 +9,7 @@ namespace Soenneker.ServiceBus.Queue.Abstract;
 /// </summary>
 public interface IServiceBusQueueUtil
 {
-    ValueTask CreateQueueIfDoesNotExist(string queue);
+    ValueTask CreateQueueIfDoesNotExist(string queue, CancellationToken cancellationToken = default);
 
-    ValueTask EmptyQueue(string queue);
+    ValueTask EmptyQueue(string queue, CancellationToken cancellationToken = default);
 }

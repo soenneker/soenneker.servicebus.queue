@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Azure;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Extensions.Logging;
+using Soenneker.Extensions.Task;
+using Soenneker.Extensions.ValueTask;
 using Soenneker.ServiceBus.Admin.Abstract;
 using Soenneker.ServiceBus.Client.Abstract;
 using Soenneker.ServiceBus.Queue.Abstract;
@@ -22,21 +25,21 @@ public class ServiceBusQueueUtil : IServiceBusQueueUtil
         _serviceBusAdminUtil = serviceBusAdminUtil;
     }
 
-    public async ValueTask CreateQueueIfDoesNotExist(string queue)
+    public async ValueTask CreateQueueIfDoesNotExist(string queue, CancellationToken cancellationToken = default)
     {
-        Response<bool>? queueExists = await (await _serviceBusAdminUtil.GetClient()).QueueExistsAsync(queue);
+        Response<bool>? queueExists = await (await _serviceBusAdminUtil.Get(cancellationToken).NoSync()).QueueExistsAsync(queue, cancellationToken).NoSync();
 
-        if (queueExists == null || !queueExists.Value)
+        if (queueExists is not {Value: true})
         {
             _logger.LogInformation("== SERVICEBUSQUEUEUTIL: Queue did not exist, creating: {queue} ...", queue);
 
-            await (await _serviceBusAdminUtil.GetClient()).CreateQueueAsync(queue);
+            await (await _serviceBusAdminUtil.Get(cancellationToken).NoSync()).CreateQueueAsync(queue, cancellationToken).NoSync();
 
             _logger.LogInformation("== SERVICEBUSQUEUEUTIL: Queue finished creating: {queue}", queue);
         }
     }
 
-    public async ValueTask EmptyQueue(string queue)
+    public async ValueTask EmptyQueue(string queue, CancellationToken cancellationToken = default)
     {
         _logger.LogWarning("== SERVICEBUSQUEUEUTIL: Emptying queue {queue} ...", queue);
 
@@ -45,16 +48,16 @@ public class ServiceBusQueueUtil : IServiceBusQueueUtil
             ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete
         };
 
-        ServiceBusClient client = await _serviceBusClientUtil.GetClient();
+        ServiceBusClient client = await _serviceBusClientUtil.GetClient(cancellationToken).NoSync();
 
         ServiceBusReceiver? receiver = client.CreateReceiver(queue, receiverOptions);
 
-        while (await receiver.PeekMessageAsync() != null)
+        while (await receiver.PeekMessageAsync(cancellationToken: cancellationToken).NoSync() != null)
         {
-            _ = await receiver.ReceiveMessagesAsync(100);
+            _ = await receiver.ReceiveMessagesAsync(100, cancellationToken: cancellationToken).NoSync();
         }
 
-        await receiver.DisposeAsync();
+        await receiver.DisposeAsync().NoSync();
 
         _logger.LogInformation("== SERVICEBUSQUEUEUTIL: Finished clearing queue {queue}", queue);
     }
