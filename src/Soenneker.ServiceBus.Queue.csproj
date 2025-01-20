@@ -36,9 +36,10 @@
         <None Include="..\README.md" Pack="true" PackagePath="\" />
         <None Include="..\LICENSE" Pack="true" PackagePath="\" />
         <None Include="..\icon.png" Pack="true" PackagePath="\" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
         <PackageReference Include="Soenneker.Extensions.Task" Version="3.0.86" />
         
-        <PackageReference Include="Soenneker.ServiceBus.Admin" Version="3.0.1108" />
-        <PackageReference Include="Soenneker.ServiceBus.Client" Version="3.0.1100" />
+        <PackageReference Include="Soenneker.ServiceBus.Admin" Version="3.0.1109" />
+        <PackageReference Include="Soenneker.ServiceBus.Client" Version="3.0.1113" />
     </ItemGroup>
 </Project>
