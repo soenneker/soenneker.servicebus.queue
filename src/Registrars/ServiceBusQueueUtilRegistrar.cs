@@ -11,17 +11,21 @@ namespace Soenneker.ServiceBus.Queue.Registrars;
 /// </summary>
 public static class ServiceBusQueueUtilRegistrar
 {
-    public static void AddServiceBusQueueUtilAsSingleton(this IServiceCollection services)
+    public static IServiceCollection AddServiceBusQueueUtilAsSingleton(this IServiceCollection services)
     {
-        services.AddServiceBusAdminUtilAsSingleton();
-        services.AddServiceBusClientUtilAsSingleton();
-        services.TryAddSingleton<IServiceBusQueueUtil, ServiceBusQueueUtil>();
+        services.AddServiceBusAdminUtilAsSingleton()
+                .AddServiceBusClientUtilAsSingleton()
+                .TryAddSingleton<IServiceBusQueueUtil, ServiceBusQueueUtil>();
+
+        return services;
     }
 
-    public static void AddServiceBusQueueUtilAsScoped(this IServiceCollection services)
+    public static IServiceCollection AddServiceBusQueueUtilAsScoped(this IServiceCollection services)
     {
-        services.AddServiceBusAdminUtilAsSingleton();
-        services.AddServiceBusClientUtilAsSingleton();
-        services.TryAddScoped<IServiceBusQueueUtil, ServiceBusQueueUtil>();
+        services.AddServiceBusAdminUtilAsSingleton()
+                .AddServiceBusClientUtilAsSingleton()
+                .TryAddScoped<IServiceBusQueueUtil, ServiceBusQueueUtil>();
+
+        return services;
     }
 }
