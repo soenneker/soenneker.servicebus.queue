@@ -37,7 +37,7 @@
         <None Include="..\LICENSE" Pack="true" PackagePath="\" />
         <None Include="..\icon.png" Pack="true" PackagePath="\" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
-        <PackageReference Include="Soenneker.Extensions.Task" Version="3.0.88" />
+        <PackageReference Include="Soenneker.Extensions.Task" Version="3.0.89" />
         
         <PackageReference Include="Soenneker.ServiceBus.Admin" Version="3.0.1259" />
         <PackageReference Include="Soenneker.ServiceBus.Client" Version="3.0.1271" />
