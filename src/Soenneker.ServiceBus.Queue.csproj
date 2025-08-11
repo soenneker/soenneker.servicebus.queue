@@ -39,7 +39,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
         <PackageReference Include="Soenneker.Extensions.Task" Version="3.0.104" />
         
-        <PackageReference Include="Soenneker.ServiceBus.Admin" Version="3.0.1421" />
+        <PackageReference Include="Soenneker.ServiceBus.Admin" Version="3.0.1423" />
         <PackageReference Include="Soenneker.ServiceBus.Client" Version="3.0.1425" />
     </ItemGroup>
 </Project>
