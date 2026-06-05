@@ -11,6 +11,11 @@ namespace Soenneker.ServiceBus.Queue.Registrars;
 /// </summary>
 public static class ServiceBusQueueUtilRegistrar
 {
+    /// <summary>
+    /// Adds service bus queue util as singleton.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddServiceBusQueueUtilAsSingleton(this IServiceCollection services)
     {
         services.AddServiceBusAdminUtilAsSingleton()
@@ -20,6 +25,11 @@ public static class ServiceBusQueueUtilRegistrar
         return services;
     }
 
+    /// <summary>
+    /// Adds service bus queue util as scoped.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The result of the operation.</returns>
     public static IServiceCollection AddServiceBusQueueUtilAsScoped(this IServiceCollection services)
     {
         services.AddServiceBusAdminUtilAsSingleton()
