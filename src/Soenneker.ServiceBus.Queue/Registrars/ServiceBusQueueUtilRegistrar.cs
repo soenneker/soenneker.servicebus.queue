@@ -12,10 +12,10 @@ namespace Soenneker.ServiceBus.Queue.Registrars;
 public static class ServiceBusQueueUtilRegistrar
 {
     /// <summary>
-    /// Adds service bus queue util as singleton.
+    /// Registers Service Bus Queue Util with a singleton lifetime.
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <returns>The result of the operation.</returns>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddServiceBusQueueUtilAsSingleton(this IServiceCollection services)
     {
         services.AddServiceBusAdminUtilAsSingleton()
@@ -26,10 +26,10 @@ public static class ServiceBusQueueUtilRegistrar
     }
 
     /// <summary>
-    /// Adds service bus queue util as scoped.
+    /// Registers Service Bus Queue Util with a scoped lifetime.
     /// </summary>
-    /// <param name="services">The service collection.</param>
-    /// <returns>The result of the operation.</returns>
+    /// <param name="services">Service collection that receives the registration.</param>
+    /// <returns>The same service collection, so additional registrations can be chained.</returns>
     public static IServiceCollection AddServiceBusQueueUtilAsScoped(this IServiceCollection services)
     {
         services.AddServiceBusAdminUtilAsSingleton()

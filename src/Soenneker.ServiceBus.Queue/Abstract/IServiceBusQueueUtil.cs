@@ -12,16 +12,16 @@ public interface IServiceBusQueueUtil
     /// <summary>
     /// Creates queue if does not exist.
     /// </summary>
-    /// <param name="queue">The queue.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <param name="queue">Queue for the create queue if does not exist operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    /// <returns>A task that completes when the queue if does not exist creation is complete.</returns>
     ValueTask CreateQueueIfDoesNotExist(string queue, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Executes the empty queue operation.
+    /// Returns the value produced by empty Queue.
     /// </summary>
-    /// <param name="queue">The queue.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <param name="queue">Queue for the empty queue operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    /// <returns>A task that completes when the empty queue operation is complete.</returns>
     ValueTask EmptyQueue(string queue, CancellationToken cancellationToken = default);
 }
