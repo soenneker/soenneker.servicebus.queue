@@ -12,7 +12,7 @@ using Soenneker.ServiceBus.Queue.Abstract;
 
 namespace Soenneker.ServiceBus.Queue;
 
-///<inheritdoc cref="IServiceBusQueueUtil"/>
+/// <inheritdoc cref="IServiceBusQueueUtil"/>
 public sealed class ServiceBusQueueUtil : IServiceBusQueueUtil
 {
     private readonly ILogger<ServiceBusQueueUtil> _logger;
