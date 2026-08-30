@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using System;
 using Azure;
 using Azure.Messaging.ServiceBus;
 using Azure.Messaging.ServiceBus.Administration;
@@ -53,14 +54,15 @@ public sealed class ServiceBusQueueUtil : IServiceBusQueueUtil
 
         ServiceBusClient client = await _serviceBusClientUtil.Get(cancellationToken).NoSync();
 
-        ServiceBusReceiver? receiver = client.CreateReceiver(queue, receiverOptions);
+        await using ServiceBusReceiver receiver = client.CreateReceiver(queue, receiverOptions);
 
-        while (await receiver.PeekMessageAsync(cancellationToken: cancellationToken).NoSync() != null)
+        while (true)
         {
-            _ = await receiver.ReceiveMessagesAsync(100, cancellationToken: cancellationToken).NoSync();
-        }
+            var messages = await receiver.ReceiveMessagesAsync(100, TimeSpan.FromSeconds(1), cancellationToken).NoSync();
 
-        await receiver.DisposeAsync().NoSync();
+            if (messages.Count == 0)
+                break;
+        }
 
         _logger.LogInformation("== SERVICEBUSQUEUEUTIL: Finished clearing queue {queue}", queue);
     }

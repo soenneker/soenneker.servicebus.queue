@@ -5,40 +5,48 @@
 
 # Soenneker.ServiceBus.Queue
 
-A utility library for Azure Service Bus queue accessibility Singleton IoC.
+Azure Service Bus helpers for creating a queue when absent and destructively removing its currently available active messages.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Soenneker.ServiceBus.Queue
 ```
 
-## Quick start
+## Configuration and registration
+
+Set `Azure:ServiceBus:ConnectionString`, then register the utility:
 
 ```csharp
 using Soenneker.ServiceBus.Queue.Registrars;
-using Microsoft.Extensions.DependencyInjection;
 
-var services = new ServiceCollection();
-var result = services.AddServiceBusQueueUtilAsSingleton();
+services.AddServiceBusQueueUtilAsScoped();
 ```
 
-Registers Service Bus Queue Util with a singleton lifetime.
+The scoped registrar deliberately keeps the underlying administration and data-plane client utilities singleton while making `IServiceBusQueueUtil` scoped. `AddServiceBusQueueUtilAsSingleton()` is also available.
 
-## What you get
+The connection-string credential needs management permission to create queues and receive permission to empty them.
 
-- `IServiceBusQueueUtil` — A utility library for Azure Service Bus queue accessibility Singleton IoC.
-- `ServiceBusQueueUtilRegistrar` — A utility library for Azure Service Bus queue accessibility.
+## Ensure a queue exists
 
-## API at a glance
+```csharp
+await queueUtil.CreateQueueIfDoesNotExist(
+    "orders",
+    cancellationToken);
+```
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `IServiceBusQueueUtil.EmptyQueue(queue, cancellationToken)` | Returns the value produced by empty Queue. | A task that completes when the empty queue operation is complete. |
-| `ServiceBusQueueUtilRegistrar.AddServiceBusQueueUtilAsSingleton(services)` | Registers Service Bus Queue Util with a singleton lifetime. | The same service collection, so additional registrations can be chained. |
-| `ServiceBusQueueUtilRegistrar.AddServiceBusQueueUtilAsScoped(services)` | Registers Service Bus Queue Util with a scoped lifetime. | The same service collection, so additional registrations can be chained. |
+The queue is created with Azure SDK defaults. This method does not update an existing queue or configure settings such as lock duration, duplicate detection, partitioning, maximum delivery count, or dead lettering. Use `ServiceBusAdministrationClient` directly when custom entity options are required.
 
-## Practical notes
+The existence check and creation are separate broker operations. Concurrent callers can race; coordinate provisioning when more than one instance may create the same entity.
 
-- Cancellation stops pending work; it does not undo work that has already completed.
-- Calls that return a cached or singleton value reuse the same instance until the owning service is disposed.
+## Empty a queue
+
+```csharp
+await queueUtil.EmptyQueue("orders", cancellationToken);
+```
+
+`EmptyQueue` is destructive. It receives batches of up to 100 messages in `ReceiveAndDelete` mode and stops after a one-second receive returns no messages. Received messages cannot be recovered or abandoned.
+
+This operation drains currently available active messages from the queue's primary entity. It does not purge the dead-letter subqueue, explicitly receive deferred messages, cancel scheduled messages, or prevent producers from adding messages concurrently. A producer can enqueue a message after the final empty receive.
+
+Do not use `EmptyQueue` as part of normal message processing. It is intended for controlled cleanup where permanent deletion is acceptable.
