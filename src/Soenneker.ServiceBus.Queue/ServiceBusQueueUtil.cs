@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using System;
 using Azure;
@@ -13,7 +13,6 @@ using Soenneker.ServiceBus.Queue.Abstract;
 
 namespace Soenneker.ServiceBus.Queue;
 
-/// <inheritdoc cref="IServiceBusQueueUtil"/>
 public sealed class ServiceBusQueueUtil : IServiceBusQueueUtil
 {
     private readonly ILogger<ServiceBusQueueUtil> _logger;
@@ -37,7 +36,17 @@ public sealed class ServiceBusQueueUtil : IServiceBusQueueUtil
         {
             _logger.LogInformation("== SERVICEBUSQUEUEUTIL: Queue did not exist, creating: {queue} ...", queue);
 
-            await adminClient.CreateQueueAsync(queue, cancellationToken).NoSync();
+            try
+            {
+                await adminClient.CreateQueueAsync(queue, cancellationToken).NoSync();
+            }
+            catch (ServiceBusException ex) when (ex.Reason == ServiceBusFailureReason.MessagingEntityAlreadyExists)
+            {
+                // Another process may have provisioned it after the existence check.
+                // Confirm it is a queue; a conflicting topic must still fail.
+                if (!(await adminClient.QueueExistsAsync(queue, cancellationToken).NoSync()).Value)
+                    throw;
+            }
 
             _logger.LogInformation("== SERVICEBUSQUEUEUTIL: Queue finished creating: {queue}", queue);
         }
