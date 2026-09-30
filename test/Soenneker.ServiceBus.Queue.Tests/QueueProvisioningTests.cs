@@ -15,7 +15,7 @@ public class QueueProvisioningTests
     [Arguments(true, true)]
     [Arguments(true, false)]
     [Arguments(false, true)]
-    public async Task ConcurrentCreationOnlySucceedsWhenTheQueueExists(bool entityExistsError, bool queueExistsAfterRace)
+    public async ValueTask ConcurrentCreationOnlySucceedsWhenTheQueueExists(bool entityExistsError, bool queueExistsAfterRace)
     {
         var admin = new RacingAdmin(entityExistsError, queueExistsAfterRace);
         var util = new ServiceBusQueueUtil(NullLogger<ServiceBusQueueUtil>.Instance, null!, new AdminUtil(admin));
