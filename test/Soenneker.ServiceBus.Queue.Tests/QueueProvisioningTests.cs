@@ -15,12 +15,12 @@ public class QueueProvisioningTests
     [Arguments(true, true)]
     [Arguments(true, false)]
     [Arguments(false, true)]
-    public async ValueTask ConcurrentCreationOnlySucceedsWhenTheQueueExists(bool entityExistsError, bool queueExistsAfterRace)
+    public async ValueTask ConcurrentCreationOnlySucceedsWhenTheQueueExists(bool entityExistsError, bool queueExistsAfterRace, CancellationToken cancellationToken)
     {
         var admin = new RacingAdmin(entityExistsError, queueExistsAfterRace);
         var util = new ServiceBusQueueUtil(NullLogger<ServiceBusQueueUtil>.Instance, null!, new AdminUtil(admin));
         bool failed = false;
-        try { await util.CreateQueueIfDoesNotExist("audit"); }
+        try { await util.CreateQueueIfDoesNotExist("audit", cancellationToken: cancellationToken); }
         catch (ServiceBusException) { failed = true; }
         if (failed == (entityExistsError && queueExistsAfterRace))
             throw new InvalidOperationException("Queue provisioning swallowed an error or failed a successful race");
